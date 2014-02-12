@@ -30,21 +30,24 @@ architecture BHV of mult_add is
   
 begin
    process (clk, rst)
-		-- store the multiplication result into a variable
-		variable mult_res : unsigned(2*width-1 downto 0);
+      -- store the multiplication result into a variable
+      variable mult_res : unsigned(2*width-1 downto 0);
  
-	begin
+   begin
       if (rst = '1') then
-         output <= (others => '0');
+         mult_reg    <= (others => '0');
+         input3_reg  <= (others => '0');
+         output      <= (others => '0');
+
       elsif (rising_edge(clk)) then
-			-- assignment of the signal on a rising edge
-			-- synthesizes as a register
+         -- assignment of the signal on a rising edge
+         -- synthesizes as a register
          mult_res := unsigned(input1) * unsigned(input2);
-			
-			-- keep only the lower half of the multiplication result
+         
+         -- keep only the lower half of the multiplication result
          mult_reg <= std_logic_vector( mult_res(width-1 downto 0));
-			
-			-- the last input is stored in a register before the add stage
+         
+         -- the last input is stored in a register before the add stage
          input3_reg <= input3;
 
          output <= std_logic_vector(unsigned(mult_reg) + unsigned(input3_reg));
